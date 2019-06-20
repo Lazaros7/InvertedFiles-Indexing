@@ -1,0 +1,25 @@
+1. What articles exist which deal with TSS (Time Sharing System), an operating system for IBM computers?
+2. I am interested in articles written either by Prieve or Udo Pooch, Prieve, B. Pooch, U.
+3. Intermediate languages used in construction of multi-targeted compilers; TCOLL
+4. I'm interested in mechanisms for communicating between disjoint processes, possibly, but not exclusively, in a distributed environment.  I would rather see descriptions of complete mechanisms, with or without implementations, as opposed to theoretical work on the abstract problem.  Remote procedure calls and message-passing are examples of my interests.
+5. I'd like papers on design and implementation of editing interfaces, window-managers, command interpreters, etc.  The essential issues are human interface design, with views on improvements to user efficiency, effectiveness and satisfaction.
+6. Interested in articles on robotics, motion planning particularly the geometric and combinatorial aspects.  We are not interested in the dynamics of arm motion.
+7. I am interested in distributed algorithms - concurrent programs in which processes communicate and synchronize by using message passing. Areas of particular interest include fault-tolerance and techniques for understanding the correctness of these algorithms.
+8. Addressing schemes for resources in networks; resource addressing in network operating systems
+9. Security considerations in local networks, network operating systems, and distributed systems.
+10. Parallel languages; languages for parallel computation
+11. SETL, Very High Level Languages
+12. portable operating systems
+13. code optimization for space efficiency
+14. find all discussions of optimal implementations of sort algorithms for database management applications
+15. Find all discussions of horizontal microcode optimization with special emphasis on optimization of loops and global optimization.
+16. find all descriptions of file handling in operating systems based on multiple processes and message passing.
+17. Optimization of intermediate and machine code
+18. Languages and compilers for parallel processors, especially highly horizontal microcoded machines; code compaction
+19. Parallel algorithms
+20. Graph theoretic algorithms applicable to sparse matrices
+21. computational complexity, intractability, class-complete reductions, algorithms and efficiency
+22. I am interested in hidden-line and hidden-surface algorithms for cylinders, toroids, spheres, and cones.  This is a rather specialized topic in computer graphics.
+23. Distributed computing structures and algorithms
+24. Applied stochastic processes
+25. Performance evaluation and modelling of computer systems
