@@ -1,111 +1,157 @@
 import os
 import re
+import string
+import nltk
+from nltk.stem.porter import PorterStemmer
+# nltk.download('punkt') # Uncomment  this the first time you run the program
 
-def removeNumbers(list):
+def removeNumbers(words):
     pattern = '[0-9]'
-    list = [re.sub(pattern, '', i) for i in list]
-    return list
+    words = [re.sub(pattern, '', i) for i in words]
+    return words
 
-# os.mkdir("Index-1")
-# os.mkdir("Index-2")
-# os.mkdir("Index-3")
-# os.mkdir("Index-4")
+def punctuationAndLower(words):
+    words = words.translate(str.maketrans('', '', string.punctuation))
+    words = words.lower()
+    return words
 
-wordsList = list()
-word2ID_Dict = {}       #1
-text2ID_Dict = {}       #2
-revertedFile_Dict = {}  #3
+def stemming(words):
+     porter_stemmer = PorterStemmer()
 
-fileID = 0
-a = 0 # Testing purposes
+     for i in range(len(words)):
+         words[i] = porter_stemmer.stem(words[i])
 
-for filename in os.listdir("CACM"):
-    fileID += 1
-    a += 1
+     return  words
 
-    with open("CACM/" + filename, mode="r", encoding="utf-8") as file:
-        words = file.read().lower().split()
-        words = removeNumbers(words)
-        words = list(filter(None, words))
+def stopwordRemoval(words):
+    with open("files/stoplist.txt", mode="r", encoding="utf-8") as file:
+        stopwordList = set()
+        for line in file:
+            stopwordList.add(line.strip())
 
-        words.remove('<html>')
-        words.remove('<pre>')
-        words.remove('</pre>')
-        words.remove('</html>')
+        for word in reversed(words):
+            if (word in stopwordList):
+                words.remove(word)
+                
+        return words
 
-        '''creating the text2ID dictionary'''
-        text2ID_Dict[filename] = [fileID, len(words)]
+def createIndex(indexNum):
+    try:
+        os.mkdir(indexNum)
+    except FileExistsError:
+        pass
+        
+    wordsList = list()
+    word2ID_Dict = {}  # 1
+    text2ID_Dict = {}  # 2
+    revertedFile_Dict = {}  # 3
 
-        '''creating the revertedFile dictionary'''
-        for word in words:
-            if (word in revertedFile_Dict) and (revertedFile_Dict[word][0][0] != fileID):
-                revertedFile_Dict[word].append([fileID, 1])
-            elif (word in revertedFile_Dict) and (revertedFile_Dict[word][0][0] == fileID):
-                revertedFile_Dict[word][0][1] += 1
-            else:
-                revertedFile_Dict[word] = [[fileID, 1]]
+    fileID = 0
+    a = 0  # Testing purposes
 
-        # Testing purposes
-        # print(sorted(words))
-        # if a == 2:
-        #     print(sorted(words))
-        #     break
+    for filename in os.listdir("CACM"):
+        fileID += 1
+        a += 1  # Testing purposes
 
-        wordsList += words
+        with open("CACM/" + filename, mode="r", encoding="utf-8") as file:
+            words = file.read()
+            words = punctuationAndLower(words)
+            words = words.split()
+            words = removeNumbers(words)
+            words = list(filter(None, words))
 
-wordsList = list(sorted(set(wordsList)))
+            words.remove('html')
+            words.remove('pre')
+            words.remove('pre')
+            words.remove('html')
 
-index = 0
-line = 0
+            if(indexNum == "Index-1"):
+                pass
+            elif(indexNum == "Index-2"):
+                words = stemming(words)
+            elif(indexNum == "Index-3"):
+                words = stopwordRemoval(words)
+            elif(indexNum == "Index-4"):
+                words = stopwordRemoval(words)
+                words = stemming(words)
 
-'''creating the word2ID dictionary'''
-for word in wordsList:
-    index += 1
-    frequency = 0
+            '''creating the text2ID dictionary'''
+            text2ID_Dict[filename] = [fileID, len(words)]
 
-    word2ID_Dict[word] = [index, 0, []]
+            '''creating the revertedFile dictionary'''
+            for word in words:
+                if (word in revertedFile_Dict) and (revertedFile_Dict[word][0][0] != fileID):
+                    revertedFile_Dict[word].append([fileID, 1])
+                elif (word in revertedFile_Dict) and (revertedFile_Dict[word][0][0] == fileID):
+                    revertedFile_Dict[word][0][1] += 1
+                else:
+                    revertedFile_Dict[word] = [[fileID, 1]]
 
-    for i in revertedFile_Dict[word]:
-        line += 1
-        frequency += i[1]
+            # Testing purposes
+            # print(sorted(words))
+            # if a == 2:
+            #     print(sorted(words))
+            #     break
 
-        word2ID_Dict[word][2].append(line)
+            wordsList += words
 
-    word2ID_Dict[word][1] = frequency
+    wordsList = list(sorted(set(wordsList)))
 
-# Testing purposes
-# print(wordsList)
-# print(word2ID_Dict['a.'])
-# print(wordsList)
-# print(text2ID_Dict)
-# print(len(wordsList))
+    index = 0
+    line = 0
 
-with open("Index-1/text2ID.txt", mode="w", encoding="utf-8") as file:
-    file.write("textName textID textLength\n")
-
-    textNamesList = sorted(list(text2ID_Dict.keys()))
-
-    for textName in textNamesList:
-        file.write(textName + " " + str(text2ID_Dict[textName][0]) + " " + str(text2ID_Dict[textName][1]) + "\n")
-
-with open("Index-1/word2ID.txt", mode="w", encoding="utf-8") as file:
-    file.write("word wordID frequency line_appearences\n")
-
-    # wordsList = sorted(list(text2ID_Dict.keys()))
-
+    '''creating the word2ID dictionary'''
     for word in wordsList:
-        file.write(word + " " + str(word2ID_Dict[word][0]) + " " + str(word2ID_Dict[word][1]) + " ")
-        for line in word2ID_Dict[word][2]:
-            file.write(str(line) + " ")
-        file.write("\n")
+        index += 1
+        frequency = 0
 
-with open("Index-1/revertedFile.txt", mode="w", encoding="utf-8") as file:
-    file.write("wordID textID appearances\n")
+        word2ID_Dict[word] = [index, 0, []]
 
-    # wordsList = sorted(list(revertedFile_Dict.keys()))
+        for i in revertedFile_Dict[word]:
+            line += 1
+            frequency += i[1]
 
-    for word in wordsList:
-        for list in revertedFile_Dict[word]:
-            file.write(str(word2ID_Dict[word][0]) + " " + str(list[0]) + " " + str(list[1]) + "\n")
+            word2ID_Dict[word][2].append(line)
+
+        word2ID_Dict[word][1] = frequency
+
+    # Testing purposes
+    # print(wordsList)
+    # print(word2ID_Dict['a.'])
+    # print(wordsList)
+    # print(text2ID_Dict)
+    # print(len(wordsList))
+
+    with open(indexNum + "/text2ID.txt", mode="w", encoding="utf-8") as file:
+        file.write("textName textID textLength\n")
+
+        textNamesList = sorted(list(text2ID_Dict.keys()))
+
+        for textName in textNamesList:
+            file.write(textName + " " + str(text2ID_Dict[textName][0]) + " " + str(text2ID_Dict[textName][1]) + "\n")
+
+    with open(indexNum + "/word2ID.txt", mode="w", encoding="utf-8") as file:
+        file.write("word wordID frequency line_appearences\n")
+
+        # wordsList = sorted(list(text2ID_Dict.keys()))
+
+        for word in wordsList:
+            file.write(word + " " + str(word2ID_Dict[word][0]) + " " + str(word2ID_Dict[word][1]) + " ")
+            for line in word2ID_Dict[word][2]:
+                file.write(str(line) + " ")
+            file.write("\n")
+
+    with open(indexNum + "/revertedFile.txt", mode="w", encoding="utf-8") as file:
+        file.write("wordID textID appearances\n")
+
+        # wordsList = sorted(list(revertedFile_Dict.keys()))
+
+        for word in wordsList:
+            for value in revertedFile_Dict[word]:
+                file.write(str(word2ID_Dict[word][0]) + " " + str(value[0]) + " " + str(value[1]) + "\n")
 
 
+createIndex("Index-1")
+createIndex("Index-2")
+createIndex("Index-3")
+createIndex("Index-4")

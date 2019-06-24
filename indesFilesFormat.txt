@@ -1,0 +1,21 @@
+1)word2ID.txt
+
+   Term         ID_term   Term_Frequancy
+   encryption   35        14
+
+2)text2ID.txt
+
+   Text_Name        ID_text  Text_Length(in Terms)
+   CACM-0003.html   3        100.000
+
+3)RevertedFile.txt
+
+   Vocabulary   Occurences
+   ID_term      ID_text      Term_Occurences
+   35           3            10
+   35           20           4
+
+4)Enriched word2ID.txt (replaces word2ID.txt)
+
+   Term        ID_term   Term_Frequancy   Lines_of_RevertedFile_appearing
+   encryption  35        14               2 3
